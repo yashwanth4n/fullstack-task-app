@@ -1,0 +1,40 @@
+name: Full Stack CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: backend/package-lock.json
+
+      - name: Install backend dependencies
+        working-directory: backend
+        run: npm ci
+
+      - name: Build backend Docker image
+        run: docker build -t fullstack-task-backend ./backend
+
+      - name: Validate frontend files
+        run: |
+          test -f frontend/index.html
+          test -f frontend/style.css
+          test -f frontend/script.js
+
+      - name: Validate Docker Compose
+        run: docker compose config
