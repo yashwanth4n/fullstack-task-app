@@ -1,4 +1,4 @@
-name: Full Stack CI
+name: Full Stack CI/CD
 
 on:
   push:
@@ -9,7 +9,7 @@ on:
       - main
 
 jobs:
-  build:
+  build-and-push:
     runs-on: ubuntu-latest
 
     steps:
@@ -27,9 +27,6 @@ jobs:
         working-directory: backend
         run: npm ci
 
-      - name: Build backend Docker image
-        run: docker build -t fullstack-task-backend ./backend
-
       - name: Validate frontend files
         run: |
           test -f frontend/index.html
@@ -38,3 +35,23 @@ jobs:
 
       - name: Validate Docker Compose
         run: docker compose config
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push backend image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./backend
+          push: true
+          tags: yashwanth4n/fullstack-task-backend:latest
+
+      - name: Build and push frontend image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./frontend
+          push: true
+          tags: yashwanth4n/fullstack-task-frontend:latest
