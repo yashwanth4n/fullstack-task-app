@@ -47,11 +47,11 @@ jobs:
         with:
           context: ./backend
           push: true
-          tags: yashwanth4n/fullstack-task-backend:latest
+          tags: bunnynithin/fullstack-task-backend:latest
 
       - name: Build and push frontend image
         uses: docker/build-push-action@v6
         with:
           context: ./frontend
           push: true
-          tags: yashwanth4n/fullstack-task-frontend:latest
+          tags: bunnynithin/fullstack-task-frontend:latest
