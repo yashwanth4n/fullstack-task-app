@@ -55,6 +55,7 @@ jobs:
           context: ./frontend
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/fullstack-task-frontend:latest
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -68,23 +69,3 @@ jobs:
             --cluster task-app-cluster \
             --service task-app-service \
             --force-new-deployment
-           - name: Build and push frontend image
-        uses: docker/build-push-action@v6
-        with:
-          context: ./frontend
-          push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/fullstack-task-frontend:latest
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
-
-      - name: Force ECS deployment
-        run: |
-          aws ecs update-service \
-            --cluster task-app-cluster \
-            --service task-app-service \
-            --force-new-deployment       
